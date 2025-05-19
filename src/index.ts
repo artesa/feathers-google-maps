@@ -76,7 +76,6 @@ export class GoogleMapsService<Method extends GoogleMapsMethod> {
       );
     }
 
-    // @ts-expect-error TODO: fix this
     // This works when commenting out the directions GoogleMapsMethod
     return this.googleMapsService[this.googleMethod]({
       // @ts-expect-error TODO: fix this
