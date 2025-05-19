@@ -33,7 +33,10 @@ export type GoogleMapsMethod =
 
 export type GoogleMapsParams<Method extends GoogleMapsMethod> = {
   key?: string;
-} & Parameters<Client[Method]>[0]['params'];
+} & Omit<
+  Parameters<Client[Method]>[0]['params'],
+  'key' | 'client_id' | 'client_secret'
+>;
 
 export type GoogleMapsRequest<Method extends GoogleMapsMethod> = Omit<
   Parameters<Client[Method]>[0],
