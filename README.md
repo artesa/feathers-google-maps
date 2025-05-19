@@ -1,11 +1,11 @@
-# feathers-google-maps
+# @artesa/feathers-google-maps
 
 > A Feathers service for Google Maps API
 
 ## Installation
 
 ```
-yarn add feathers-google-maps
+pnpm add @artesa/feathers-google-maps
 ```
 
 ## Documentation
@@ -36,7 +36,7 @@ The following methods are supported and map to the appropriate @google/maps meth
 ## Creating a Service
 
 ```js
-const GoogleMapsService = require('feathers-google-maps');
+const GoogleMapsService = require('@artesa/feathers-google-maps');
 
 const Directions = new GoogleMapsService({
   key: 'YOUR API KEY',
@@ -92,7 +92,7 @@ googleMaps.directions({
 const feathers = require('@feathersjs/feathers');
 const express = require('@feathersjs/express');
 const socketio = require('@feathersjs/socketio');
-const GoogleMapsService = require('feathers-google-maps');
+const GoogleMapsService = require('@artesa/feathers-google-maps');
 
 // Initialize the application
 const app = feathers()
