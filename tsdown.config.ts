@@ -6,7 +6,7 @@ export default defineConfig({
   external: [
     // regex for "node:*" imports
     /^node:.*/,
-    ...Object.keys(pkg.dependencies),
+    // ...Object.keys(pkg.dependencies),
     ...Object.keys(pkg.devDependencies),
   ],
   dts: true,
