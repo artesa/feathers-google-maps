@@ -1,6 +1,6 @@
 {
   "name": "@artesa/feathers-google-maps",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A Feathers service for interacting with the Google Maps API",
   "keywords": [
     "feathers",
