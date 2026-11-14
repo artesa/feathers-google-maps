@@ -5,7 +5,9 @@
     "moduleResolution": "NodeNext",
     "strict": true,
     "isolatedDeclarations": true,
-    "declaration": true
+    "declaration": true,
+    "resolveJsonModule": true,
+    "types": ["node"]
   },
-  "include": ["src"]
+  "include": ["src", "test", "tsdown.config.ts"]
 }

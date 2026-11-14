@@ -34,15 +34,16 @@
   ],
   "scripts": {
     "build": "tsdown",
+    "lint": "eslint",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "pnpm typecheck && pnpm test && pnpm build"
+    "prepublishOnly": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/artesa/feathers-google-maps.git"
   },
-  "author": "Nils Bergmann <contact+feathers-google-maps@noim.net>",
+  "author": "Artesa",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/artesa/feathers-google-maps/issues"
@@ -59,13 +60,17 @@
     }
   },
   "devDependencies": {
-    "@feathersjs/errors": "^5.0.1",
-    "@feathersjs/feathers": "^5.0.1",
+    "@feathers-community/eslint-config": "^0.3.0",
+    "@feathersjs/errors": "^5.0.50",
+    "@feathersjs/feathers": "^5.0.50",
     "@googlemaps/google-maps-services-js": "^3.4.2",
-    "@types/node": "^22.15.19",
-    "tsdown": "^0.11.11",
-    "typescript": "^5.0.3",
+    "@types/node": "^22.20.5",
+    "eslint": "^10.15.0",
+    "prettier": "^3.10.1",
+    "tsdown": "^0.23.7",
+    "typescript": "^6.0.3",
     "vitest": "^5.1.0"
   },
+  "prettier": "@feathers-community/eslint-config/prettier",
   "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }

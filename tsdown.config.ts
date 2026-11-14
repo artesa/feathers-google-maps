@@ -1,15 +1,21 @@
 import { defineConfig } from 'tsdown';
-import pkg from './package.json';
+import type { UserConfig } from 'tsdown';
+import pkg from './package.json' with { type: 'json' };
 
-export default defineConfig({
+const config: UserConfig = defineConfig({
   entry: ['./src/index.ts', './src/legacy.ts'],
-  external: [
-    // regex for "node:*" imports
-    /^node:.*/,
-    ...Object.keys(pkg.devDependencies),
-  ],
+  deps: {
+    neverBundle: [
+      // regex for "node:*" imports
+      /^node:.*/,
+      ...Object.keys(pkg.devDependencies),
+    ],
+  },
   dts: true,
   sourcemap: true,
   format: ['esm'],
+  fixedExtension: false,
   outDir: 'dist',
 });
+
+export default config;
