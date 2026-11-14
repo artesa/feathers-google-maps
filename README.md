@@ -10,27 +10,40 @@ Each Google method is a Feathers service, so caching, rate limits and logging go
 pnpm add @artesa/feathers-google-maps
 ```
 
-Node 22 or later (global `fetch`). Enable the APIs you use for your key in the Google Cloud
-console.
+Node 24 or later. Enable the APIs you use for your key in the Google Cloud console.
 
 ## Usage
 
 ```ts
-import { GoogleMapsRestService, durationSeconds } from '@artesa/feathers-google-maps';
+import {
+  GoogleMapsRestService,
+  durationSeconds,
+} from '@artesa/feathers-google-maps'
 
 app.use(
   'places/search',
-  new GoogleMapsRestService({ key, method: 'searchText', fieldMask: ['places.id'] }),
-);
-app.use('weather/days', new GoogleMapsRestService({ key, method: 'forecastDays' }));
+  new GoogleMapsRestService({
+    key,
+    method: 'searchText',
+    fieldMask: ['places.id'],
+  }),
+)
+app.use(
+  'weather/days',
+  new GoogleMapsRestService({ key, method: 'forecastDays' }),
+)
 
 const { places } = await app
   .service('places/search')
-  .find({ query: { textQuery: 'Lindenweg 4, Freiburg' } });
+  .find({ query: { textQuery: 'Lindenweg 4, Freiburg' } })
 
 const { forecastDays } = await app.service('weather/days').find({
-  query: { location: { latitude: 47.99, longitude: 7.84 }, days: 7, languageCode: 'de' },
-});
+  query: {
+    location: { latitude: 47.99, longitude: 7.84 },
+    days: 7,
+    languageCode: 'de',
+  },
+})
 ```
 
 `find({ query })` and `create(data)` both send the request; `find` suits Feathers' caching hooks.
@@ -61,13 +74,13 @@ The 2.x wrapper of `@googlemaps/google-maps-services-js` (Directions, Distance M
 Place Details, Geocoding, …) moved to its own entry; install that library alongside:
 
 ```ts
-import { GoogleMapsService } from '@artesa/feathers-google-maps/legacy';
+import { GoogleMapsService } from '@artesa/feathers-google-maps/legacy'
 
-app.use('directions', new GoogleMapsService({ key, method: 'directions' }));
+app.use('directions', new GoogleMapsService({ key, method: 'directions' }))
 ```
 
 ## License
 
-Copyright (c) 2023
+Copyright (c) 2026 Artesa
 
 Licensed under the [MIT license](LICENSE).

@@ -8,3 +8,4 @@
 - Forecasts are fetched across pages and joined; `durationSeconds` reads Routes durations.
 - **Breaking:** the legacy `GoogleMapsService` moved to `@artesa/feathers-google-maps/legacy`, and
   `@googlemaps/google-maps-services-js` is an optional peer dependency, needed for it only.
+- **Breaking:** requires Node.js 24 or later.

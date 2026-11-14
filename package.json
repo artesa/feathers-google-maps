@@ -23,7 +23,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "engines": {
-    "node": ">= 22.0.0"
+    "node": ">= 24.0.0"
   },
   "files": [
     "CHANGELOG.md",
@@ -64,7 +64,7 @@
     "@feathersjs/errors": "^5.0.50",
     "@feathersjs/feathers": "^5.0.50",
     "@googlemaps/google-maps-services-js": "^3.4.2",
-    "@types/node": "^22.20.5",
+    "@types/node": "^24.19.2",
     "eslint": "^10.15.0",
     "prettier": "^3.10.1",
     "tsdown": "^0.23.7",
