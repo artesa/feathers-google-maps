@@ -1,6 +1,6 @@
-import { defineConfig } from 'tsdown';
-import type { UserConfig } from 'tsdown';
-import pkg from './package.json' with { type: 'json' };
+import { defineConfig } from 'tsdown'
+import type { UserConfig } from 'tsdown'
+import pkg from './package.json' with { type: 'json' }
 
 const config: UserConfig = defineConfig({
   entry: ['./src/index.ts', './src/legacy.ts'],
@@ -16,6 +16,6 @@ const config: UserConfig = defineConfig({
   format: ['esm'],
   fixedExtension: false,
   outDir: 'dist',
-});
+})
 
-export default config;
+export default config
