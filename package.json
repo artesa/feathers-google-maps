@@ -1,22 +1,36 @@
 {
   "name": "@artesa/feathers-google-maps",
   "version": "2.0.2",
-  "description": "A Feathers service for interacting with the Google Maps API",
+  "description": "Feathers services for Google Maps Platform: Places API (New), Routes API and Weather API, and the legacy web services",
   "keywords": [
     "feathers",
-    "google maps"
+    "google maps",
+    "places",
+    "routes",
+    "weather"
   ],
   "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./legacy": {
+      "types": "./dist/legacy.d.ts",
+      "import": "./dist/legacy.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "engines": {
-    "node": ">= 22.0.0"
+    "node": ">= 24.0.0"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.22.3",
+      "onFail": "download"
+    }
   },
   "files": [
     "CHANGELOG.md",
@@ -26,13 +40,17 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "tsdown"
+    "build": "tsdown",
+    "lint": "eslint",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/artesa/feathers-google-maps.git"
   },
-  "author": "Nils Bergmann <contact+feathers-google-maps@noim.net>",
+  "author": "Artesa",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/artesa/feathers-google-maps/issues"
@@ -43,10 +61,23 @@
     "@feathersjs/feathers": "^5.0.1",
     "@googlemaps/google-maps-services-js": "^3.3.28"
   },
-  "devDependencies": {
-    "@types/node": "^22.15.19",
-    "tsdown": "^0.11.11",
-    "typescript": "^5.0.3"
+  "peerDependenciesMeta": {
+    "@googlemaps/google-maps-services-js": {
+      "optional": true
+    }
   },
-  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
+  "devDependencies": {
+    "@feathers-community/eslint-config": "^0.3.0",
+    "@feathersjs/errors": "^5.0.50",
+    "@feathersjs/feathers": "^5.0.50",
+    "@googlemaps/google-maps-services-js": "^3.4.2",
+    "@types/node": "^24.19.2",
+    "eslint": "^10.14.0",
+    "prettier": "^3.10.1",
+    "tsdown": "^0.23.7",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0"
+  },
+  "prettier": "@feathers-community/eslint-config/prettier",
+  "packageManager": "pnpm@12.18.0+sha512.9d7882d5dc82147ecfc4e062aa34834e0ad0296710a1837a1115ae012127d36b7109e321ac1598a1dd0a65597681b1e99917e12ed0d749eae91187943363beb3"
 }

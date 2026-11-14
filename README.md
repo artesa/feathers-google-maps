@@ -1,6 +1,8 @@
 # @artesa/feathers-google-maps
 
-> A Feathers service for Google Maps API
+> Feathers services for Google Maps Platform: Places API (New), Routes API and Weather API
+
+Each Google method is a Feathers service, so caching, rate limits and logging go into hooks.
 
 ## Installation
 
@@ -8,198 +10,77 @@
 pnpm add @artesa/feathers-google-maps
 ```
 
-## Documentation
+Node 24 or later. Enable the APIs you use for your key in the Google Cloud console.
 
-This service is a light wrapper around the @googlemaps/google-maps-services-js library. Please refer to the [@googlemaps/google-maps-services-js](https://github.com/googlemaps/google-maps-services-js) documenation for options that can be passed. You will also find it helpful to reference the [Google Maps Web Service APIs](https://developers.google.com/maps/apis-by-platform#web_service_apis) docs.
+## Usage
 
-### Available Services
+```ts
+import {
+  GoogleMapsRestService,
+  durationSeconds,
+} from '@artesa/feathers-google-maps'
 
-The following methods are supported and map to the appropriate @google/maps methods:
+app.use(
+  'places/search',
+  new GoogleMapsRestService({
+    key,
+    method: 'searchText',
+    fieldMask: ['places.id'],
+  }),
+)
+app.use(
+  'weather/days',
+  new GoogleMapsRestService({ key, method: 'forecastDays' }),
+)
 
-- directions
-- distancematrix
-- elevation
-- findPlaceFromText
-- geocode
-- geolocate
-- nearestRoads
-- placeAutocomplete
-- placeDetails
-- placePhoto
-- placeQueryAutocomplete
-- placesNearby
-- reverseGeocode
-- snapToRoads
-- textSearch
-- timezone
+const { places } = await app
+  .service('places/search')
+  .find({ query: { textQuery: 'Lindenweg 4, Freiburg' } })
 
-## Creating a Service
-
-```js
-const GoogleMapsService = require('@artesa/feathers-google-maps');
-
-const Directions = new GoogleMapsService({
-  key: 'YOUR API KEY',
-  method: 'directions'
-});
-
-app.use('directions', Directions);
-```
-
-The service exposes two methods, `find(params)` and `create(data, params)`. These two methods are functionally equivalent. The `create()` method is added so that you can take advantage of the `.on('created')` service event.
-
-When using the `find(params)` method, include the `query` as the params to be passed to the underlying GoogleMaps method.
-
-```js
-app.service('directions').find({
+const { forecastDays } = await app.service('weather/days').find({
   query: {
-    origin: 'Nashville, TN',
-    destination: 'Memphis, TN'
-  }
-});
-
-// This will call the googlMaps method like
-googleMaps.directions({
-  params: {
-    origin: 'Nashville, TN',
-    destination: 'Memphis, TN',
-    key: 'YOUR API KEY'
-  }
-});
+    location: { latitude: 47.99, longitude: 7.84 },
+    days: 7,
+    languageCode: 'de',
+  },
+})
 ```
 
-When using the `create(data, params)` method, the `data` will be passed to the underlying GoogleMaps method.
+`find({ query })` and `create(data)` both send the request; `find` suits Feathers' caching hooks.
+Requests and responses are typed per method (`GoogleMapsRestRequests`, `GoogleMapsRestResponses`).
 
-```js
-app.service('directions').create({
-  origin: 'Nashville, TN',
-  destination: 'Memphis, TN'
-});
+| `method`            | API              | Request                                      |
+| ------------------- | ---------------- | -------------------------------------------- |
+| `searchText`        | Places API (New) | `POST places:searchText`                     |
+| `placeDetails`      | Places API (New) | `GET places/{placeId}`, `placeId` in `query` |
+| `computeRoutes`     | Routes API       | `POST directions/v2:computeRoutes`           |
+| `currentConditions` | Weather API      | `GET currentConditions:lookup`               |
+| `forecastDays`      | Weather API      | `GET forecast/days:lookup`, up to 10 days    |
+| `forecastHours`     | Weather API      | `GET forecast/hours:lookup`, up to 240 hours |
 
-// This will also call the googlMaps method like
-googleMaps.directions({
-  params: {
-    origin: 'Nashville, TN',
-    destination: 'Memphis, TN',
-    key: 'YOUR API KEY'
-  }
-});
-```
+- **Field masks** are required for Places and Routes: the fields you ask for decide the SKU a call
+  is billed as, so there is no default and no `*`.
+- **Forecasts** that span several pages are fetched page by page and joined; each page is a billed
+  call. All 10 days fit one page, which the service asks for unless you give a `pageSize`.
+  Passing a `pageToken` yourself returns just that page.
+- **Errors** are Google's message as the Feathers error of the HTTP status (`NotFound`,
+  `BadRequest`, …), Google's `error` object as `data`.
+- `durationSeconds('1234s')` reads the Routes API's durations.
+- Weather shown to users needs Google's attribution next to it: see the Weather API's policies.
 
-## Complete Example
+## Legacy web services
 
-```js
-const feathers = require('@feathersjs/feathers');
-const express = require('@feathersjs/express');
-const socketio = require('@feathersjs/socketio');
-const GoogleMapsService = require('@artesa/feathers-google-maps');
+The 2.x wrapper of `@googlemaps/google-maps-services-js` (Directions, Distance Matrix, Find Place,
+Place Details, Geocoding, …) moved to its own entry; install that library alongside:
 
-// Initialize the application
-const app = feathers()
-  .configure(express.rest())
-  .configure(socketio())
-  .use(express.json())
-  .use(express.urlencoded({ extended: true }))
-  .use(express.errorHandler({ html: false }));
+```ts
+import { GoogleMapsService } from '@artesa/feathers-google-maps/legacy'
 
-// Create a directions service
-app.use('directions', new GoogleMapsService({
-  key: 'YOUR API KEY',
-  method: 'directions'
-}));
-
-// Create a geocode service
-app.use('geocode', new GoogleMapsService({
-  key: 'YOUR API KEY',
-  method: 'geocode'
-}));
-
-const directionsService = app.service('directions');
-const geocodeService = app.service('geocode');
-
-const successHook = context => {
-  // On success, context.params.googleMaps will include a `response`
-  console.log('Success: ', context.data, context.params.googleMaps);
-}
-
-const errorHook = context => {
-  // On error, context.params.googleMaps will include an `error`
-  console.log('Error: ', context.error, context.params.googleMaps);
-}
-
-directionsService.hooks(
-  after: {
-    find: [successHook]
-    create: [successHook]
-  },
-  error: {
-    find: [errorHook]
-    create: [errorHook]
-  },
-);
-
-directionsService.on('created', result => {
-  console.log('Directions created event');
-})
-
-geocodeService.hooks(
-  after: {
-    find: [successHook]
-    create: [successHook]
-  },
-  error: {
-    find: [errorHook]
-    create: [errorHook]
-  },
-);
-
-geocodeService.on('created', result => {
-  console.log('Geocode created event');
-})
-
-directionsService
-  .find({ query: { origin: 'Nashville, TN', destination: 'Memphis, TN' } })
-  .then(result => {
-    console.log('Directions found', result);
-  })
-  .catch(error => {
-    console.log('Error finding directions', error);
-  });
-
-directionsService
-  .create({ origin: 'Nashville, TN', destination: 'Memphis, TN' })
-  .then(result => {
-    console.log('Directions created', result);
-  })
-  .catch(error => {
-    console.log('Error creating directions', error);
-  });
-
-geocodeService
-  .find({ query: { address: '1010 Forrest Ave, Nashville, TN' } })
-  .then(result => {
-    console.log('Geocode found', result);
-  })
-  .catch(error => {
-    console.log('Error geocoding', error);
-  });
-
-geocodeService
-  .create({ address: '1010 Forrest Ave, Nashville, TN' })
-  .then(result => {
-    console.log('Geocode found', result);
-  })
-  .catch(error => {
-    console.log('Error geocoding', error);
-  });
-
-app.listen(3030);
-
-console.log('Feathers app started on 127.0.0.1:3030');
+app.use('directions', new GoogleMapsService({ key, method: 'directions' }))
 ```
 
 ## License
 
-Copyright (c) 2023
+Copyright (c) 2026 Artesa
 
 Licensed under the [MIT license](LICENSE).
