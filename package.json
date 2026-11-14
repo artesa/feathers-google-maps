@@ -23,12 +23,12 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "engines": {
-    "node": ">= 24.0.0"
+    "node": ">= 26.13.0"
   },
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "24.22.3",
+      "version": "^26.13.0",
       "onFail": "download"
     }
   },
@@ -71,7 +71,7 @@
     "@feathersjs/errors": "^5.0.50",
     "@feathersjs/feathers": "^5.0.50",
     "@googlemaps/google-maps-services-js": "^3.4.2",
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.6",
     "eslint": "^10.14.0",
     "prettier": "^3.10.1",
     "tsdown": "^0.23.7",

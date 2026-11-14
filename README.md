@@ -10,7 +10,7 @@ Each Google method is a Feathers service, so caching, rate limits and logging go
 pnpm add @artesa/feathers-google-maps
 ```
 
-Node 24 or later. Enable the APIs you use for your key in the Google Cloud console.
+Node 26.13 or later. Enable the APIs you use for your key in the Google Cloud console.
 
 ## Usage
 
